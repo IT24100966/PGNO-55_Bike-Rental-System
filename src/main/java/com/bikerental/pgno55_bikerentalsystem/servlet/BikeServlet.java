@@ -2,10 +2,10 @@ package com.bikerental.pgno55_bikerentalsystem.servlet;
 
 
 
-import com.bikerental.dao.BikeDAO;
-import com.bikerental.model.Bike;
-import com.bikerental.model.ElectricBike;
-import com.bikerental.model.RegularBike;
+import com.bikerental.pgno55_bikerentalsystem.dao.BikeDAO;
+import com.bikerental.pgno55_bikerentalsystem.model.Bike;
+import com.bikerental.pgno55_bikerentalsystem.model.ElectricBike;
+import com.bikerental.pgno55_bikerentalsystem.model.RegularBike;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
