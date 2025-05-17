@@ -1,8 +1,6 @@
 package com.bikerental.pgno55_bikerentalsystem.model;
 
-import java.io.Serializable;
-
-public abstract class Bike implements Serializable {
+public abstract class Bike  {
     private String bikeId;
     private String location;
     private double pricePerHour;
