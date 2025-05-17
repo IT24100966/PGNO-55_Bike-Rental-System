@@ -1,0 +1,2 @@
+BIKE001,Electric,Colombo,40.00,true,50
+BIKE004,Electric,Malabe,11.00,true,40
