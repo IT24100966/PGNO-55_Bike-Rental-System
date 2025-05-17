@@ -17,7 +17,7 @@ public class BikeDAO {
     public BikeDAO(ServletContext servletContext) {
         this.servletContext = servletContext;
         // Hardcode the path to the project source directory
-        this.filePath = "C:\\Users\\ACER\\IdeaProjects\\PGNO-55_Bike-Rental-System\\src\\main\\webapp\\WEB-INF\\";
+        this.filePath = "C:\\Users\\ACER\\IdeaProjects\\PGNO-55_Bike-Rental-System\\src\\main\\webapp\\WEB-INF\\bikes.txt";
         initializeFile();
     }
 
