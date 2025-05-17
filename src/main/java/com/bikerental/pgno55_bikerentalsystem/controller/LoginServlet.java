@@ -40,7 +40,7 @@ public class LoginServlet extends HttpServlet {
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             // Set isAdmin attribute based on user type
-            session.setAttribute("isAdmin", user instanceof com.example.bikerentalsystem2.model.AdminUser);
+            session.setAttribute("isAdmin", user instanceof com.bikerental.pgno55_bikerentalsystem.model.AdminUser);
             response.sendRedirect(request.getContextPath() + "/user-management?action=profile");
         } else {
             request.setAttribute("error", "Invalid username or password");
