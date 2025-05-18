@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BikeShare | Feedback Portal</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold gradient-text">BikeShare</a>
+        <div class="space-x-6">
+            <a href="submit-review.html" class="text-gray-700 font-medium hover:text-indigo-600">Submit Review</a>
+            <a href="view-reviews.html" class="text-gray-700 font-medium hover:text-indigo-600">View Reviews</a>
+            <a href="index.html" class="text-gray-700 font-medium hover:text-indigo-600">Feedback Portal</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="fixed top-20 left-10 w-16 h-16 rounded-full bg-indigo-100 opacity-50 animate-float"></div>
+    <div class="fixed bottom-1/4 right-20 w-24 h-24 rounded-full bg-purple-100 opacity-50 animate-float" style="animation-delay: 2s;"></div>
+
+    <header class="mb-12 text-center">
+        <h1 class="text-4xl font-bold gradient-text mb-2">BikeShare</h1>
+        <h2 class="text-3xl font-semibold text-gray-800">Feedback Portal</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto mt-3">Share your journey experience and help us improve our service</p>
+    </header>
+
+    <div class="glass-card rounded-2xl p-6 max-w-md mx-auto">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Community Feedback</h3>
+        <div class="grid grid-cols-2 gap-4 mb-4">
+            <div class="bg-indigo-50 rounded-xl p-4 text-center">
+                <div id="avgRating" class="text-2xl font-bold text-indigo-600">0.0</div>
+                <div class="text-xs text-gray-500">AVG RATING</div>
+            </div>
+            <div class="bg-purple-50 rounded-xl p-4 text-center">
+                <div id="totalReviews" class="text-2xl font-bold text-purple-600">0</div>
+                <div class="text-xs text-gray-500">TOTAL REVIEWS</div>
+            </div>
+        </div>
+        <canvas id="ratingChart" height="150"></canvas>
+    </div>
+</div>
+
+<script>
+    let ratingChart;
+
+    async function fetchStats() {
+        try {
+            const response = await fetch('http://localhost:8080/api/stats');
+            const stats = await response.json();
+            document.getElementById('avgRating').textContent = stats.averageRating.toFixed(1);
+            document.getElementById('totalReviews').textContent = stats.totalReviews;
+
+            const ctx = document.getElementById('ratingChart').getContext('2d');
+            if (ratingChart) ratingChart.destroy();
+            ratingChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['5 Stars', '4 Stars', '3 Stars', '2 Stars', '1 Star'],
+                    datasets: [{
+                        data: stats.ratingDistribution.slice().reverse(), // Reverse to match 1-5 order
+                        backgroundColor: [
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(99, 102, 241, 0.7)',
+                            'rgba(99, 102, 241, 0.7)'
+                        ],
+                        borderColor: [
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)',
+                            'rgba(99, 102, 241, 1)'
+                        ],
+                        borderWidth: 1,
+                        borderRadius: 6
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: function(context) {
+                                    return `${context.parsed.y} reviews`;
+                                }
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            title: {
+                                display: true,
+                                text: 'Number of Reviews'
+                            }
+                        }
+                    }
+                }
+            });
+        } catch (error) {
+            showNotification('Error fetching stats.', 'error');
+        }
+    }
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-5 right-5 px-6 py-3 rounded-lg shadow-lg text-white font-medium transform transition-all duration-300 translate-x-64 ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        }`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.classList.remove('translate-x-64');
+        }, 10);
+        setTimeout(() => {
+            notification.classList.add('translate-x-64');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+
+    fetchStats();
+</script>
+</body>
+</html>

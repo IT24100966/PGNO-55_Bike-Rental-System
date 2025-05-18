@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BikeShare | Submit Review</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4e8f0 100%);
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            box-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+        @keyframes float {
+            0% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+            100% { transform: translateY(0px); }
+        }
+        .gradient-text {
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+    </style>
+</head>
+<body class="min-h-screen">
+<nav class="bg-white shadow-md">
+    <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+        <a href="index.html" class="text-2xl font-bold gradient-text">BikeShare</a>
+        <div class="space-x-6">
+            <a href="submit-review.html" class="text-gray-700 font-medium hover:text-indigo-600">Submit Review</a>
+            <a href="view-reviews.html" class="text-gray-700 font-medium hover:text-indigo-600">View Reviews</a>
+            <a href="index.html" class="text-gray-700 font-medium hover:text-indigo-600">Feedback Portal</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container mx-auto px-4 py-8 max-w-6xl">
+    <div class="fixed top-20 left-10 w-16 h-16 rounded-full bg-indigo-100 opacity-50 animate-float"></div>
+    <div class="fixed bottom-1/4 right-20 w-24 h-24 rounded-full bg-purple-100 opacity-50 animate-float" style="animation-delay: 2s;"></div>
+
+    <header class="mb-12 text-center">
+        <h1 class="text-4xl font-bold gradient-text mb-2">BikeShare</h1>
+        <h2 class="text-3xl font-semibold text-gray-800">Submit Your Review</h2>
+        <p class="text-gray-500 max-w-2xl mx-auto mt-3">Share your experience to help us improve our service</p>
+    </header>
+
+    <div class="glass-card rounded-2xl p-6 max-w-md mx-auto">
+        <h3 class="text-lg font-medium text-gray-800 mb-4">Share Your Experience</h3>
+        <form id="reviewForm" class="space-y-4">
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Select Bike</label>
+                <select name="bikeId" class="w-full px-4 py-2 border-0 bg-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm">
+                    <option value="1234">Trek FX 2</option>
+                    <option value="5678">Specialized Sirrus X 3.0</option>
+                </select>
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Your Rating</label>
+                <div class="flex justify-between">
+                    <button type="button" class="star-rating text-2xl text-gray-300 hover:text-yellow-400 transition-colors duration-200" data-rating="1">★</button>
+                    <button type="button" class="star-rating text-2xl text-gray-300 hover:text-yellow-400 transition-colors duration-200" data-rating="2">★</button>
+                    <button type="button" class="star-rating text-2xl text-gray-300 hover:text-yellow-400 transition-colors duration-200" data-rating="3">★</button>
+                    <button type="button" class="star-rating text-2xl text-gray-300 hover:text-yellow-400 transition-colors duration-200" data-rating="4">★</button>
+                    <button type="button" class="star-rating text-2xl text-gray-300 hover:text-yellow-400 transition-colors duration-200" data-rating="5">★</button>
+                </div>
+                <input type="hidden" id="ratingValue" name="rating" value="0">
+            </div>
+            <div>
+                <label class="block text-sm font-medium text-gray-700 mb-1">Your Review</label>
+                <textarea rows="3" name="text" class="w-full px-4 py-2 border-0 bg-gray-100 rounded-lg focus:ring-2 focus:ring-indigo-500 text-sm" placeholder="Tell us about your experience..."></textarea>
+            </div>
+            <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-purple-600 text-white py-2.5 rounded-lg font-medium hover:opacity-90 transition-opacity duration-200 shadow-md">
+                Submit Review
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+    const starRatings = document.querySelectorAll('.star-rating');
+    const ratingValue = document.getElementById('ratingValue');
+
+    starRatings.forEach(star => {
+        star.addEventListener('click', () => {
+            const rating = parseInt(star.getAttribute('data-rating'));
+            ratingValue.value = rating;
+            starRatings.forEach((s, index) => {
+                if (index < rating) {
+                    s.classList.add('text-yellow-400');
+                    s.classList.remove('text-gray-300');
+                } else {
+                    s.classList.add('text-gray-300');
+                    s.classList.remove('text-yellow-400');
+                }
+            });
+        });
+    });
+
+    document.getElementById('reviewForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const bikeId = document.querySelector('select[name="bikeId"]').value;
+        const rating = document.getElementById('ratingValue').value;
+        const text = document.querySelector('textarea[name="text"]').value;
+
+        try {
+            const response = await fetch('http://localhost:8080/api/reviews', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body: `bikeId=${bikeId}&rating=${rating}&text=${encodeURIComponent(text)}`
+            });
+            if (response.ok) {
+                showNotification('Thank you for your review!', 'success');
+                document.getElementById('reviewForm').reset();
+                ratingValue.value = '0';
+                starRatings.forEach(star => {
+                    star.classList.add('text-gray-300');
+                    star.classList.remove('text-yellow-400');
+                });
+            } else {
+                showNotification('Failed to submit review.', 'error');
+            }
+        } catch (error) {
+            showNotification('Error connecting to server.', 'error');
+        }
+    });
+
+    function showNotification(message, type) {
+        const notification = document.createElement('div');
+        notification.className = `fixed top-5 right-5 px-6 py-3 rounded-lg shadow-lg text-white font-medium transform transition-all duration-300 translate-x-64 ${
+            type === 'success' ? 'bg-green-500' : 'bg-red-500'
+        }`;
+        notification.textContent = message;
+        document.body.appendChild(notification);
+        setTimeout(() => {
+            notification.classList.remove('translate-x-64');
+        }, 10);
+        setTimeout(() => {
+            notification.classList.add('translate-x-64');
+            setTimeout(() => {
+                notification.remove();
+            }, 300);
+        }, 3000);
+    }
+</script>
+</body>
+</html>
