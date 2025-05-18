@@ -1,7 +1,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
-  <title>BikeRental - Add User</title>
+  <title>BikeRental - Add Bike</title>
   <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
   <style>
@@ -159,16 +159,16 @@
       <h1 class="bikerental-logo text-2xl">BikeRental</h1>
     </div>
     <nav class="flex items-center space-x-2">
-      <a href="../addBike.jsp" class="nav-link">
+      <a href="addBike.jsp" class="nav-link active">
         <i class="fas fa-plus-circle icon"></i>Add Bike
       </a>
-      <a href="../viewBikes" class="nav-link">
+      <a href="viewBikes" class="nav-link">
         <i class="fas fa-list icon"></i>View Bikes
       </a>
-      <a href="viewUsers" class="nav-link active">
+      <a href="admin/viewUsers" class="nav-link">
         <i class="fas fa-users icon"></i>Manage Users
       </a>
-      <a href="viewActivityLog" class="nav-link">
+      <a href="admin/viewActivityLog" class="nav-link">
         <i class="fas fa-clipboard-list icon"></i>Activity Log
       </a>
     </nav>
@@ -180,8 +180,8 @@
   <div class="max-w-lg mx-auto">
     <div class="bikerental-card p-8">
       <div class="text-center mb-8">
-        <h2 class="text-2xl font-bold text-gray-800">Add a New User</h2>
-        <p class="text-gray-500 mt-2">Enter the details of the new user</p>
+        <h2 class="text-2xl font-bold text-gray-800">Add a New Bike</h2>
+        <p class="text-gray-500 mt-2">Enter the details of the bike you want to add to the fleet</p>
       </div>
 
       <% if (request.getAttribute("error") != null) { %>
@@ -193,51 +193,59 @@
       </div>
       <% } %>
 
-      <form action="addUser" method="post">
+      <form action="addBike" method="post">
         <div class="form-group">
-          <input type="text" id="username" name="username" class="form-input" required placeholder=" " />
-          <label class="form-label" for="username">
-            <i class="fas fa-user text-indigo-500"></i>Username
+          <input type="text" id="id" name="id" class="form-input" required placeholder=" " />
+          <label class="form-label" for="id">
+            <i class="fas fa-fingerprint text-indigo-500"></i>Bike ID
           </label>
         </div>
 
         <div class="form-group">
-          <input type="email" id="email" name="email" class="form-input" required placeholder=" " />
-          <label class="form-label" for="email">
-            <i class="fas fa-envelope text-indigo-500"></i>Email
+          <input type="text" id="model" name="model" class="form-input" required placeholder=" " />
+          <label class="form-label" for="model">
+            <i class="fas fa-tag text-indigo-500"></i>Model
           </label>
         </div>
 
         <div class="form-group">
-          <input type="password" id="password" name="password" class="form-input" required placeholder=" " />
-          <label class="form-label" for="password">
-            <i class="fas fa-lock text-indigo-500"></i>Password
+          <input type="text" id="location" name="location" class="form-input" required placeholder=" " />
+          <label class="form-label" for="location">
+            <i class="fas fa-map-marker-alt text-indigo-500"></i>Location
           </label>
         </div>
 
         <div class="form-group">
-          <select id="role" name="role" class="form-input" required>
+          <select id="status" name="status" class="form-input" required>
             <option value="" disabled selected hidden></option>
-            <option value="admin">Admin</option>
-            <option value="user">User</option>
+            <option value="Available">Available</option>
+            <option value="Rented">Rented</option>
+            <option value="Maintenance">Maintenance</option>
           </select>
-          <label class="form-label" for="role">
-            <i class="fas fa-user-tag text-indigo-500"></i>Role
+          <label class="form-label" for="status">
+            <i class="fas fa-info-circle text-indigo-500"></i>Status
+          </label>
+        </div>
+
+        <div class="form-group">
+          <input type="number" id="price" step="0.01" name="price" class="form-input" required placeholder=" " />
+          <label class="form-label" for="price">
+            <i class="fas fa-dollar-sign text-indigo-500"></i>Price (per hour)
           </label>
         </div>
 
         <div class="mt-8">
           <button type="submit" class="bikerental-button w-full flex justify-center items-center">
-            <i class="fas fa-user-plus mr-2"></i>
-            Add User
+            <i class="fas fa-bicycle mr-2"></i>
+            Add Bike
           </button>
         </div>
       </form>
 
       <div class="mt-6 text-center">
-        <a href="viewUsers" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center justify-center">
+        <a href="viewBikes" class="text-indigo-600 hover:text-indigo-800 font-medium flex items-center justify-center">
           <i class="fas fa-arrow-left mr-2"></i>
-          View All Users
+          View All Bikes
         </a>
       </div>
     </div>
@@ -255,6 +263,7 @@
         </div>
         <p class="text-gray-400 mt-2 text-center md:text-left">Making bike rental simple and accessible.</p>
       </div>
+
       <div class="flex space-x-4">
         <a href="#" class="text-gray-400 hover:text-white transition">
           <i class="fab fa-facebook text-xl"></i>
@@ -267,6 +276,7 @@
         </a>
       </div>
     </div>
+
     <div class="border-t border-gray-700 mt-8 pt-8 text-center">
       <p>© 2025 BikeRental. All rights reserved.</p>
     </div>
