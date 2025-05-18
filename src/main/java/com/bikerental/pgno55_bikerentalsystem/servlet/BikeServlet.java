@@ -107,7 +107,7 @@ public class BikeServlet extends HttpServlet {
 
             try {
                 bikeDAO.addBike(bike);
-                bikeDAO.addRentalRequest(bikeId);
+
                 System.out.println("Bike added successfully: " + bikeId);
                 List<Bike> bikes = bikeDAO.sortBikesByAvailability();
                 System.out.println("Fetched " + bikes.size() + " bikes after adding");

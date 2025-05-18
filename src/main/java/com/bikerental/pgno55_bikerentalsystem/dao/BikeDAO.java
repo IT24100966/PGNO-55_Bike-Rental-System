@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 
 public class BikeDAO {
     private final String filePath;
-    private Queue<String> rentalRequests = new LinkedList<>();
     private final ServletContext servletContext;
 
     public BikeDAO(ServletContext servletContext) {
@@ -165,16 +164,7 @@ public class BikeDAO {
         }
     }
 
-    public void addRentalRequest(String bikeId) {
-        rentalRequests.offer(bikeId);
-        System.out.println("Added rental request for bike: " + bikeId);
-    }
 
-    public String processRentalRequest() {
-        String bikeId = rentalRequests.poll();
-        System.out.println("Processed rental request for bike: " + bikeId);
-        return bikeId;
-    }
 
     public List<Bike> sortBikesByAvailability() throws IOException {
         List<Bike> bikes = getAllBikes();
