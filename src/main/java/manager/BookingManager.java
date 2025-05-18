@@ -1,172 +1,100 @@
 package manager;
 
 import model.Booking;
-import model.RideBooking;
-import model.RentalBooking;
+import util.BookingFileUtil;
+import util.CustomQueue;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 public class BookingManager {
-    private static final String FILE_PATH = "D:/New OOP Project/New OOP Project/bookings.txt";
+    private final CustomQueue<Booking> bookingQueue;
+    private final BookingFileUtil fileUtil;
 
-    static {
-        File file = new File(FILE_PATH);
-        File directory = file.getParentFile();
-        if (!directory.exists()) {
-            directory.mkdirs(); // Create the directory if it doesn't exist
-        }
-        if (!file.exists()) {
-            try {
-                file.createNewFile(); // Create the file if it doesn't exist
-            } catch (IOException e) {
-                throw new RuntimeException("Failed to create bookings file: " + e.getMessage(), e);
+    public BookingManager() {
+        this.bookingQueue = new CustomQueue<>();
+        this.fileUtil = new BookingFileUtil();
+        // Load existing bookings from file to queue on initialization
+        try {
+            List<Booking> existingBookings = fileUtil.readAllBookings();
+            for (Booking booking : existingBookings) {
+                bookingQueue.enqueue(booking);
             }
+        } catch (IOException e) {
+            throw new RuntimeException("Failed to initialize bookings from file: " + e.getMessage(), e);
         }
     }
 
     public void createBooking(Booking booking) throws IOException {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {
-            writer.write(booking.getBookingId() + "," + booking.getUserId() + "," + booking.getBikeId() + "," +
-                    booking.getType() + "," + booking.getTime() + "," +
-                    (booking instanceof RideBooking ? ((RideBooking) booking).getDestination() + "," + ((RideBooking) booking).getDistanceKm() : ((RentalBooking) booking).getDurationHours()) + "," +
-                    booking.calculatePrice());
-            writer.newLine();
-        } catch (IOException e) {
-            throw new IOException("Failed to create booking due to file access issue: " + e.getMessage(), e);
-        }
+        bookingQueue.enqueue(booking);
+        fileUtil.writeBooking(booking);
     }
 
-    public List<Booking> readBookings(String userId) throws IOException {
-        List<Booking> bookings = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts[1].equals(userId)) {
-                    String bookingId = parts[0];
-                    String bikeId = parts[2];
-                    String type = parts[3];
-                    String time = parts[4];
-                    if (type.equals("Ride")) {
-                        String destination = parts[5];
-                        double distanceKm = Double.parseDouble(parts[6]);
-                        bookings.add(new RideBooking(bookingId, userId, bikeId, time, destination, distanceKm));
-                    } else {
-                        int durationHours = Integer.parseInt(parts[5]);
-                        bookings.add(new RentalBooking(bookingId, userId, bikeId, time, durationHours));
-                    }
-                }
+    public List<Booking> readBookings(String userId) {
+        List<Booking> userBookings = new ArrayList<>();
+        for (Booking booking : bookingQueue) {
+            if (booking.getUserId().equals(userId)) {
+                userBookings.add(booking);
             }
-        } catch (IOException e) {
-            throw new IOException("Failed to read bookings due to file access issue: " + e.getMessage(), e);
+        }
+        return userBookings;
+    }
+
+    public List<Booking> readAllBookings() {
+        List<Booking> bookings = new ArrayList<>();
+        for (Booking booking : bookingQueue) {
+            bookings.add(booking);
         }
         return bookings;
     }
 
-    public List<Booking> readAllBookings() throws IOException {
-        List<Booking> bookings = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String bookingId = parts[0];
-                String userId = parts[1];
-                String bikeId = parts[2];
-                String type = parts[3];
-                String time = parts[4];
-                if (type.equals("Ride")) {
-                    String destination = parts[5];
-                    double distanceKm = Double.parseDouble(parts[6]);
-                    bookings.add(new RideBooking(bookingId, userId, bikeId, time, destination, distanceKm));
-                } else {
-                    int durationHours = Integer.parseInt(parts[5]);
-                    bookings.add(new RentalBooking(bookingId, userId, bikeId, time, durationHours));
-                }
-            }
-        } catch (IOException e) {
-            throw new IOException("Failed to read all bookings due to file access issue: " + e.getMessage(), e);
-        }
-        return bookings;
-    }
-
-    public List<Booking> readBookings() throws IOException {
-        List<Booking> bookings = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                String bookingId = parts[0];
-                String userId = parts[1];
-                String bikeId = parts[2];
-                String type = parts[3];
-                String time = parts[4];
-                if (type.equals("Ride")) {
-                    String destination = parts[5];
-                    double distanceKm = Double.parseDouble(parts[6]);
-                    bookings.add(new RideBooking(bookingId, userId, bikeId, time, destination, distanceKm));
-                } else {
-                    int durationHours = Integer.parseInt(parts[5]);
-                    bookings.add(new RentalBooking(bookingId, userId, bikeId, time, durationHours));
-                }
-            }
-        } catch (IOException e) {
-            throw new IOException("Failed to read bookings due to file access issue: " + e.getMessage(), e);
-        }
-        return bookings;
+    public List<Booking> readBookings() {
+        return readAllBookings();
     }
 
     public void updateBooking(Booking updatedBooking) throws IOException {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts[0].equals(updatedBooking.getBookingId())) {
-                    String newLine = updatedBooking.getBookingId() + "," + updatedBooking.getUserId() + "," +
-                            updatedBooking.getBikeId() + "," + updatedBooking.getType() + "," +
-                            updatedBooking.getTime() + "," +
-                            (updatedBooking instanceof RideBooking ? ((RideBooking) updatedBooking).getDestination() + "," + ((RideBooking) updatedBooking).getDistanceKm() : ((RentalBooking) updatedBooking).getDurationHours()) + "," +
-                            updatedBooking.calculatePrice();
-                    lines.add(newLine);
-                } else {
-                    lines.add(line);
-                }
+        CustomQueue<Booking> tempQueue = new CustomQueue<>();
+        boolean updated = false;
+        while (!bookingQueue.isEmpty()) {
+            Booking current = bookingQueue.dequeue();
+            if (current.getBookingId().equals(updatedBooking.getBookingId())) {
+                tempQueue.enqueue(updatedBooking);
+                updated = true;
+            } else {
+                tempQueue.enqueue(current);
             }
-        } catch (IOException e) {
-            throw new IOException("Failed to update booking due to file access issue: " + e.getMessage(), e);
         }
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (String line : lines) {
-                writer.write(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            throw new IOException("Failed to write updated booking due to file access issue: " + e.getMessage(), e);
+        // Restore queue
+        while (!tempQueue.isEmpty()) {
+            bookingQueue.enqueue(tempQueue.dequeue());
+        }
+        if (updated) {
+            fileUtil.updateBooking(updatedBooking);
+        } else {
+            throw new IOException("Booking with ID " + updatedBooking.getBookingId() + " not found");
         }
     }
 
     public void deleteBooking(String bookingId) throws IOException {
-        List<String> lines = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(new FileReader(FILE_PATH))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                if (!line.startsWith(bookingId + ",")) {
-                    lines.add(line);
-                }
+        CustomQueue<Booking> tempQueue = new CustomQueue<>();
+        boolean deleted = false;
+        while (!bookingQueue.isEmpty()) {
+            Booking current = bookingQueue.dequeue();
+            if (!current.getBookingId().equals(bookingId)) {
+                tempQueue.enqueue(current);
+            } else {
+                deleted = true;
             }
-        } catch (IOException e) {
-            throw new IOException("Failed to delete booking due to file access issue: " + e.getMessage(), e);
         }
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH))) {
-            for (String line : lines) {
-                writer.write(line);
-                writer.newLine();
-            }
-        } catch (IOException e) {
-            throw new IOException("Failed to write after deleting booking due to file access issue: " + e.getMessage(), e);
+        // Restore queue
+        while (!tempQueue.isEmpty()) {
+            bookingQueue.enqueue(tempQueue.dequeue());
+        }
+        if (deleted) {
+            fileUtil.deleteBooking(bookingId);
+        } else {
+            throw new IOException("Booking with ID " + bookingId + " not found");
         }
     }
 }
