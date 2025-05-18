@@ -1,0 +1,2 @@
+ADMIN,admin,admin123,admin@bikerental.com,superadmin
+REGULAR,user,user123,user@bikerental.com,DL12345
