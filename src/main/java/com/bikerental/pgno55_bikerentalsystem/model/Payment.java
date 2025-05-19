@@ -1,7 +1,7 @@
 package com.bikerental.pgno55_bikerentalsystem.model;
 
-public abstract class Payment {
-    private String paymentId;
+public abstract class Payment {     //hides implementation details(abstract) that provides(only to admin)
+    private String paymentId;           //Encapsulation
     private double amount;
     private String userId;
     private String status; // e.g., "Pending", "Completed", "Failed"

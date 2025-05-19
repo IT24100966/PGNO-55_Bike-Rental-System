@@ -13,7 +13,7 @@ import java.util.List;
 
 @WebServlet("/transactionHistory")
 public class TransactionHistoryServlet extends HttpServlet {
-    private PaymentService paymentService;
+    private PaymentService paymentService; //Dependency as attribute of payment sevice
 
     @Override
     public void init() throws ServletException {
@@ -34,7 +34,7 @@ public class TransactionHistoryServlet extends HttpServlet {
 
         if (userId == null || userId.isEmpty()) {
             // Show all transactions if no userId is provided (e.g., from payment.jsp)
-            transactions = paymentService.getAllTransactions();
+            transactions = paymentService.getAllTransactions(); //Dependency (use payment service attribute to perform temporary  operation to receive all transaction data)
         } else {
             // Show transactions for the specific userId
             transactions = paymentService.getTransactionHistory(userId);
@@ -45,7 +45,7 @@ public class TransactionHistoryServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {//saves updated  the changes to txt file(admin)
         String action = request.getParameter("action");
         String userId = request.getParameter("userId");
 
