@@ -14,7 +14,7 @@ import java.util.UUID;
 
 @WebServlet({"/payment", "/"}) // Handles root URL
 public class PaymentServlet extends HttpServlet {
-    private PaymentService paymentService;  //Dependency (uses payment service attribute  temporary)
+    private PaymentService paymentService;  //Dependency (uses payment attribute temporary)
 
     @Override
     public void init() throws ServletException {
@@ -47,7 +47,7 @@ public class PaymentServlet extends HttpServlet {
                 String cardNumber = request.getParameter("cardNumber");
                 String cardType = request.getParameter("cardType");
                 CardPayment payment = new CardPayment(paymentId, amount, userId, "Pending", cardNumber, cardType);
-                paymentService.processPayment(payment);     //Dependency (uses payment temporary to pass requests and receiving data of user payment details.)
+                paymentService.processPayment(payment);     //Dependency (uses payment attribute temporary)
             } else {
                 String walletId = request.getParameter("walletId");
                 WalletPayment payment = new WalletPayment(paymentId, amount, userId, "Pending", walletId);

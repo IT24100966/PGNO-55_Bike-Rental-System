@@ -21,7 +21,7 @@ public class PaymentService {
     }
 
     // Create: Process a new payment
-    public void processPayment(Payment payment) {   //Create process paymet (CRUD) / Polymorphism (accepts a Payment parameter from wallet or card)/Association(handle payment process on payment class).
+    public void processPayment(Payment payment) {   //Create process paymet / Polymorphism /Association(handle payment process on payment class).
         synchronized (fileLock) {
             loadFromFile(); // Reload to ensure we have the latest state
             paymentQueue.offer(payment);
@@ -32,7 +32,7 @@ public class PaymentService {
     }
 
     // Read: View transaction history
-    public List<Payment> getTransactionHistory(String userId) {  //Read (CRUD) read the transaction history ,retrieves transactions for a specific user(user)
+    public List<Payment> getTransactionHistory(String userId) {  //Read the transaction history
         synchronized (fileLock) {
             loadFromFile(); // Reload to ensure we have the latest state
             List<Payment> userTransactions = new ArrayList<>();
@@ -46,7 +46,7 @@ public class PaymentService {
     }
 
     // Read: Get all transactions
-    public List<Payment> getAllTransactions() {//Read (CRUD) read the transaction history ,retrieves transactions for a All users(admin)
+    public List<Payment> getAllTransactions() {//Read the All transaction history
         synchronized (fileLock) {
             loadFromFile(); // Reload to ensure we have the latest state
             return new ArrayList<>(transactions); // Return a copy of all transactions
@@ -54,7 +54,7 @@ public class PaymentService {
     }
 
     // Update: Modify payment details
-    public void updatePayment(String paymentId, double newAmount, String newStatus) {  //Update (CRUD) updates a transaction’s amount and status based on paymentId(admin)
+    public void updatePayment(String paymentId, double newAmount, String newStatus) {  //Update a transaction’s amount and status based on paymentId(admin)
         synchronized (fileLock) {
             loadFromFile();
             for (Payment payment : transactions) {
@@ -69,7 +69,7 @@ public class PaymentService {
     }
 
     // Delete: Refund transaction
-    public void refundTransaction(String paymentId) { //Delete (CRUD) a transaction by paymentId and updates the file(txt file),(admin)
+    public void refundTransaction(String paymentId) { //Delete transaction by paymentId
         synchronized (fileLock) {
             loadFromFile();
             transactions.removeIf(payment -> payment.getPaymentId().equals(paymentId));
