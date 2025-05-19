@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Reviews</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        ul { list-style-type: none; padding: 0; }
+        li { margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
+        a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        a:hover { text-decoration: underline; }
+        button { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #c82333; }
+        .new-review { display: inline-block; margin-top: 10px; }
+    </style>
+</head>
+<body>
+<h1>Reviews</h1>
+<ul>
+    <th:block th:each="review : ${reviews}">
+        <li>
+            <strong>Review ID:</strong> <a th:href="@{/reviews/{id}(id=${review.id})}" th:text="${review.id}"></a> |
+            <strong>Type:</strong> <span th:text="${review.reviewType}"></span> |
+            <strong>Rating:</strong> <span th:text="${review.rating}"></span> |
+            <strong>User ID:</strong> <span th:text="${review.userId}"></span> |
+            <strong th:if="${review instanceof T(com.example.bikerental.model.BikeReview)}">Bike ID:</strong>
+            <span th:if="${review instanceof T(com.example.bikerental.model.BikeReview)}" th:text="${review.bikeId}"></span>
+            <strong th:if="${review instanceof T(com.example.bikerental.model.DriverReview)}">Driver ID:</strong>
+            <span th:if="${review instanceof T(com.example.bikerental.model.DriverReview)}" th:text="${review.driverId}"></span>
+            <br>
+            <strong>Feedback:</strong> <span th:text="${review.feedbackText}"></span> |
+            <strong>Timestamp:</strong> <span th:text="${review.timestamp}"></span>
+            <br>
+            <a th:href="@{/reviews/{id}/edit(id=${review.id})}">Edit</a>
+            <form th:action="@{/reviews/{id}/delete(id=${review.id})}" method="post" style="display:inline;">
+                <button type="submit">Delete</button>
+            </form>
+        </li>
+    </th:block>
+</ul>
+<a href="/reviews/new" class="new-review">New Review</a>
+</body>
+</html>

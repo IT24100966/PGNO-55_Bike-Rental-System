@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>New Review</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        form { max-width: 400px; }
+        label { display: block; margin: 10px 0 5px; }
+        input, textarea, select { width: 100%; padding: 8px; margin-bottom: 10px; border: 1px solid #ddd; border-radius: 3px; }
+        button { background-color: #28a745; color: white; border: none; padding: 10px; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #218838; }
+    </style>
+</head>
+<body>
+<h1>New Review</h1>
+<form th:action="@{/reviews}" method="post" th:object="${review}">
+    <label for="userId">User ID:</label>
+    <input type="number" id="userId" th:field="*{userId}" required />
+    <label for="rating">Rating (1-5):</label>
+    <input type="number" id="rating" th:field="*{rating}" min="1" max="5" required />
+    <label for="feedbackText">Feedback:</label>
+    <textarea id="feedbackText" th:field="*{feedbackText}" required></textarea>
+    <button type="submit">Submit</button>
+</form>
+<a href="/reviews">Back to Reviews</a>
+<script>
+    document.getElementById('reviewType').addEventListener('change', function() {
+        var driverIdField = document.getElementById('driverId');
+        var driverIdLabel = document.getElementById('driverIdLabel');
+        if (this.value === 'Driver') {
+            driverIdField.style.display = 'block';
+            driverIdLabel.style.display = 'block';
+            driverIdField.required = true;
+        } else {
+            driverIdField.style.display = 'none';
+            driverIdLabel.style.display = 'none';
+            driverIdField.required = false;
+        }
+    });
+</script>
+</body>
+</html>

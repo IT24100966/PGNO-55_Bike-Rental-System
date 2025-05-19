@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Review Details</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        h1 { color: #333; }
+        p { margin: 10px 0; }
+        a { color: #007bff; text-decoration: none; margin-right: 10px; }
+        a:hover { text-decoration: underline; }
+        button { background-color: #dc3545; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer; }
+        button:hover { background-color: #c82333; }
+    </style>
+</head>
+<body>
+<h1>Review Details</h1>
+<p><strong>ID:</strong> <span th:text="${review.id}"></span></p>
+<p><strong>Type:</strong> <span th:text="${review.reviewType}"></span></p>
+<p><strong>User ID:</strong> <span th:text="${review.userId}"></span></p>
+<p th:if="${review instanceof T(com.example.bikerental.model.BikeReview)}">
+    <strong>Bike ID:</strong> <span th:text="${review.bikeId}"></span>
+</p>
+<p th:if="${review instanceof T(com.example.bikerental.model.DriverReview)}">
+    <strong>Driver ID:</strong> <span th:text="${review.driverId}"></span>
+</p>
+<p><strong>Rating:</strong> <span th:text="${review.rating}"></span></p>
+<p><strong>Feedback:</strong> <span th:text="${review.feedbackText}"></span></p>
+<p><strong>Timestamp:</strong> <span th:text="${review.timestamp}"></span></p>
+<a th:href="@{/reviews/{id}/edit(id=${review.id})}">Edit</a>
+<form th:action="@{/reviews/{id}/delete(id=${review.id})}" method="post" style="display:inline;">
+    <button type="submit">Delete</button>
+</form>
+<a href="/reviews">Back to Reviews</a>
+</body>
+</html>
