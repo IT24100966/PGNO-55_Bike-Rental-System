@@ -43,7 +43,7 @@ public class CustomQueue<T> {
     public int size() {
         return size;
     }
-    
+
     private void resize() {
         int newCapacity = capacity * 2;
         T[] newQueue = (T[]) new Object[newCapacity];
