@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookingFileUtil {
-    private static final String FILE_PATH = "C:/Users/USER/Desktop/New OOP Project/bookings.txt";
+    private static final String FILE_PATH = "D:/Project/PGNO-55_Bike-Rental-System/bookings.txt";
 
     static {
         File file = new File(FILE_PATH);
