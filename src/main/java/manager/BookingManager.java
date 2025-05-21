@@ -21,7 +21,7 @@ public class BookingManager {
         try {
             List<Booking> existingBookings = fileUtil.readAllBookings();
             for (Booking booking : existingBookings) {
-                bookingQueue.enqueue(booking);
+                bookingQueue.insert(booking);
             }
         } catch (IOException e) {
             throw new RuntimeException("Failed to initialize bookings from file: " + e.getMessage(), e);
@@ -29,7 +29,7 @@ public class BookingManager {
     }
 
     public void createBooking(Booking booking) throws IOException {
-        bookingQueue.enqueue(booking);
+        bookingQueue.insert(booking);
         fileUtil.writeBooking(booking);
     }
     // Method to read all bookings for a specific user based on userId
@@ -60,17 +60,17 @@ public class BookingManager {
         CustomQueue<Booking> tempQueue = new CustomQueue<>();
         boolean updated = false;
         while (!bookingQueue.isEmpty()) {
-            Booking current = bookingQueue.dequeue();
+            Booking current = bookingQueue.remove();
             if (current.getBookingId().equals(updatedBooking.getBookingId())) {
-                tempQueue.enqueue(updatedBooking);
+                tempQueue.insert(updatedBooking);
                 updated = true;
             } else {
-                tempQueue.enqueue(current);
+                tempQueue.insert(current);
             }
         }
         // Restore queue
         while (!tempQueue.isEmpty()) {
-            bookingQueue.enqueue(tempQueue.dequeue());
+            bookingQueue.insert(tempQueue.remove());
         }
         if (updated) {
             fileUtil.updateBooking(updatedBooking);
@@ -83,16 +83,16 @@ public class BookingManager {
         CustomQueue<Booking> tempQueue = new CustomQueue<>();
         boolean deleted = false;
         while (!bookingQueue.isEmpty()) {
-            Booking current = bookingQueue.dequeue();
+            Booking current = bookingQueue.remove();
             if (!current.getBookingId().equals(bookingId)) {
-                tempQueue.enqueue(current);
+                tempQueue.insert(current);
             } else {
                 deleted = true;
             }
         }
         // Restore queue
         while (!tempQueue.isEmpty()) {
-            bookingQueue.enqueue(tempQueue.dequeue());
+            bookingQueue.insert(tempQueue.remove());
         }
         if (deleted) {
             fileUtil.deleteBooking(bookingId);

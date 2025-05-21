@@ -1,71 +1,85 @@
 package manager;
 
 public class CustomQueue<T> {
-    private T[] queue;
+    private T[] queueArray;
     private int front;
     private int rear;
-    private int size;
-    private int capacity;
-
+    private int nItems;
+    private int maxSize;
 
     public CustomQueue() {
-        this.capacity = 10;
-        this.queue = (T[]) new Object[capacity];
-        this.front = 0;
-        this.rear = -1;
-        this.size = 0;
+        this(10); // Default size 10 as in original
     }
 
-    public void enqueue(T item) {
-        if (size == capacity) {
+    public CustomQueue(int size) {
+        maxSize = size;
+        queueArray = (T[]) new Object[maxSize];
+        front = 0;
+        rear = -1;
+        nItems = 0;
+    }
+
+    public void insert(T item) {
+        if (isFull()) {
             resize();
         }
-        rear = (rear + 1) % capacity;
-        queue[rear] = item;
-        size++;
+
+        if (rear == maxSize - 1) {
+            rear = -1;
+        }
+        queueArray[++rear] = item;
+        nItems++;
     }
 
-    public T dequeue() {
+    public T remove() {
         if (isEmpty()) {
             throw new QueueEmptyException("Queue is empty");
         }
-        T item = queue[front];
-        queue[front] = null;
-        front = (front + 1) % capacity;
-        size--;
-        return item;
+        T temp = queueArray[front++];
+        if (front == maxSize) {
+            front = 0;
+        }
+        nItems--;
+        return temp;
     }
 
     public boolean isEmpty() {
-        return size == 0;
+        return nItems == 0;
+    }
+
+    public boolean isFull() {
+        return nItems == maxSize;
     }
 
     public int size() {
-        return size;
+        return nItems;
     }
+
 
     private void resize() {
-        int newCapacity = capacity * 2;
+        int newCapacity = maxSize * 2;
         T[] newQueue = (T[]) new Object[newCapacity];
-        for (int i = 0; i < size; i++) {
-            newQueue[i] = queue[(front + i) % capacity];
+
+        for (int i = 0; i < nItems; i++) {
+            newQueue[i] = queueArray[(front + i) % maxSize];
         }
-        queue = newQueue;
+
+        queueArray = newQueue;
         front = 0;
-        rear = size - 1;
-        capacity = newCapacity;
+        rear = nItems - 1;
+        maxSize = newCapacity;
     }
 
-    // Alternative to iterator - provide direct access to elements
+    // Method to maintain compatibility with BookingManager
     public T get(int index) {
-        if (index < 0 || index >= size) {
+        if (index < 0 || index >= nItems) {
             throw new QueueIndexOutOfBoundsException();
         }
-        return queue[(front + index) % capacity];
+        return queueArray[(front + index) % maxSize];
     }
 
     public int getSize() {
-        return size;
+        return nItems;
     }
 
     // Custom exceptions
