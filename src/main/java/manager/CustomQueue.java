@@ -7,7 +7,7 @@ public class CustomQueue<T> {
     private int size;
     private int capacity;
 
-    @SuppressWarnings("unchecked")
+
     public CustomQueue() {
         this.capacity = 10;
         this.queue = (T[]) new Object[capacity];
@@ -43,8 +43,7 @@ public class CustomQueue<T> {
     public int size() {
         return size;
     }
-
-    @SuppressWarnings("unchecked")
+    
     private void resize() {
         int newCapacity = capacity * 2;
         T[] newQueue = (T[]) new Object[newCapacity];
