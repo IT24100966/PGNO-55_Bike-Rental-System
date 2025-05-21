@@ -7,6 +7,7 @@ public class RentalBooking implements Booking {
     private String time;
     private int durationHours;
 
+    // Constructor
     public RentalBooking(String bookingId, String userId, String bikeId, String time, int durationHours) {
         this.bookingId = bookingId;
         this.userId = userId;
@@ -15,6 +16,8 @@ public class RentalBooking implements Booking {
         this.durationHours = durationHours;
     }
 
+
+    //Getters And Setters
     @Override
     public String getBookingId() { return bookingId; }
     @Override
@@ -34,6 +37,7 @@ public class RentalBooking implements Booking {
         return durationHours * 2000.00; // 2000 per hour
     }
 
+    //Display Details
     @Override
     public String getDetails() {
         return "Booking ID: " + bookingId + "<br>" +

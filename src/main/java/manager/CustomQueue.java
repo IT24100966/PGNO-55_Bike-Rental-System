@@ -1,9 +1,6 @@
 package manager;
 
-import java.util.Iterator;
-import java.util.NoSuchElementException;
-
-public class CustomQueue<T> implements Iterable<T> {
+public class CustomQueue<T> {
     private T[] queue;
     private int front;
     private int rear;
@@ -12,7 +9,7 @@ public class CustomQueue<T> implements Iterable<T> {
 
     @SuppressWarnings("unchecked")
     public CustomQueue() {
-        this.capacity = 10; // Initial capacity
+        this.capacity = 10;
         this.queue = (T[]) new Object[capacity];
         this.front = 0;
         this.rear = -1;
@@ -30,10 +27,10 @@ public class CustomQueue<T> implements Iterable<T> {
 
     public T dequeue() {
         if (isEmpty()) {
-            throw new NoSuchElementException("Queue is empty");
+            throw new QueueEmptyException("Queue is empty");
         }
         T item = queue[front];
-        queue[front] = null; // Help garbage collection
+        queue[front] = null;
         front = (front + 1) % capacity;
         size--;
         return item;
@@ -60,27 +57,28 @@ public class CustomQueue<T> implements Iterable<T> {
         capacity = newCapacity;
     }
 
-    @Override
-    public Iterator<T> iterator() {
-        return new QueueIterator();
+    // Alternative to iterator - provide direct access to elements
+    public T get(int index) {
+        if (index < 0 || index >= size) {
+            throw new QueueIndexOutOfBoundsException();
+        }
+        return queue[(front + index) % capacity];
     }
 
-    private class QueueIterator implements Iterator<T> {
-        private int currentIndex = 0;
+    public int getSize() {
+        return size;
+    }
 
-        @Override
-        public boolean hasNext() {
-            return currentIndex < size;
+    // Custom exceptions
+    public static class QueueEmptyException extends RuntimeException {
+        public QueueEmptyException(String message) {
+            super(message);
         }
+    }
 
-        @Override
-        public T next() {
-            if (!hasNext()) {
-                throw new NoSuchElementException();
-            }
-            T item = queue[(front + currentIndex) % capacity];
-            currentIndex++;
-            return item;
+    public static class QueueIndexOutOfBoundsException extends RuntimeException {
+        public QueueIndexOutOfBoundsException() {
+            super("Index out of queue bounds");
         }
     }
 }

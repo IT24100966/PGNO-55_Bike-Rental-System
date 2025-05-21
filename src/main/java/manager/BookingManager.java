@@ -7,13 +7,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class BookingManager {
+    // Custom queue to store bookings
     private final CustomQueue<Booking> bookingQueue;
+    //handle file operations
     private final BookingFileUtil fileUtil;
 
     public BookingManager() {
+        //Constructor
         this.bookingQueue = new CustomQueue<>();
         this.fileUtil = new BookingFileUtil();
-        // Load existing bookings from file to queue on initialization
+
+        // Load existing bookings from the file into the queue
         try {
             List<Booking> existingBookings = fileUtil.readAllBookings();
             for (Booking booking : existingBookings) {
@@ -28,10 +32,11 @@ public class BookingManager {
         bookingQueue.enqueue(booking);
         fileUtil.writeBooking(booking);
     }
-
+    // Method to read all bookings for a specific user based on userId
     public List<Booking> readBookings(String userId) {
         List<Booking> userBookings = new ArrayList<>();
-        for (Booking booking : bookingQueue) {
+        for (int i = 0; i < bookingQueue.getSize(); i++) {
+            Booking booking = bookingQueue.get(i);
             if (booking.getUserId().equals(userId)) {
                 userBookings.add(booking);
             }
@@ -41,8 +46,8 @@ public class BookingManager {
 
     public List<Booking> readAllBookings() {
         List<Booking> bookings = new ArrayList<>();
-        for (Booking booking : bookingQueue) {
-            bookings.add(booking);
+        for (int i = 0; i < bookingQueue.getSize(); i++) {
+            bookings.add(bookingQueue.get(i));
         }
         return bookings;
     }
