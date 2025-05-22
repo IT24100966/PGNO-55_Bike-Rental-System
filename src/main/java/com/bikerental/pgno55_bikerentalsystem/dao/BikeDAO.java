@@ -3,6 +3,7 @@ package com.bikerental.pgno55_bikerentalsystem.dao;
 import com.bikerental.pgno55_bikerentalsystem.model.Bike;
 import com.bikerental.pgno55_bikerentalsystem.model.ElectricBike;
 import com.bikerental.pgno55_bikerentalsystem.model.RegularBike;
+import com.bikerental.pgno55_bikerentalsystem.sort.BikeQuickSorter;
 import jakarta.servlet.ServletContext;
 
 import java.io.*;
@@ -15,7 +16,6 @@ public class BikeDAO {
 
     public BikeDAO(ServletContext servletContext) {
         this.servletContext = servletContext;
-        // Hardcode the path to the project source directory
         this.filePath = "C:\\Users\\ACER\\IdeaProjects\\PGNO-55_Bike-Rental-System\\src\\main\\webapp\\WEB-INF\\bikes.txt";
         initializeFile();
     }
@@ -25,7 +25,7 @@ public class BikeDAO {
             File file = new File(filePath);
             System.out.println("Initializing bikes.txt at: " + filePath);
             if (!file.exists()) {
-                file.getParentFile().mkdirs(); // Ensure directory exists
+                file.getParentFile().mkdirs();
                 file.createNewFile();
                 System.out.println("Created new bikes.txt");
             }
@@ -77,7 +77,7 @@ public class BikeDAO {
             int lineNumber = 0;
             while ((line = reader.readLine()) != null) {
                 lineNumber++;
-                System.out.println("Raw line " + lineNumber + ": [" + line + "]"); // Debug raw input
+                System.out.println("Raw line " + lineNumber + ": [" + line + "]");
                 if (line.trim().isEmpty()) {
                     System.out.println("Skipping empty line " + lineNumber);
                     continue;
@@ -164,33 +164,16 @@ public class BikeDAO {
         }
     }
 
-
-
     public List<Bike> sortBikesByAvailability() throws IOException {
         List<Bike> bikes = getAllBikes();
-        System.out.println("Sorting " + bikes.size() + " bikes by availability");
-        quickSort(bikes, 0, bikes.size() - 1);
-        return bikes;
-    }
+        System.out.println("Sorting " + bikes.size() + " bikes by availability using custom QuickSort");
+        Bike[] bikeArray = bikes.toArray(new Bike[0]);
+        BikeQuickSorter.quickSort(bikeArray, 0, bikeArray.length - 1);
 
-    private void quickSort(List<Bike> bikes, int low, int high) {
-        if (low < high) {
-            int pi = partition(bikes, low, high);
-            quickSort(bikes, low, pi - 1);
-            quickSort(bikes, pi + 1, high);
+        List<Bike> sortedList = new ArrayList<>();
+        for (Bike bike : bikeArray) {
+            sortedList.add(bike);
         }
-    }
-
-    private int partition(List<Bike> bikes, int low, int high) {
-        boolean pivot = bikes.get(high).isAvailable();
-        int i = low - 1;
-        for (int j = low; j < high; j++) {
-            if (bikes.get(j).isAvailable() && !pivot || (!bikes.get(j).isAvailable() == !pivot)) {
-                i++;
-                Collections.swap(bikes, i, j);
-            }
-        }
-        Collections.swap(bikes, i + 1, high);
-        return i + 1;
+        return sortedList;
     }
 }
