@@ -1,5 +1,2 @@
 BIKE001,Regular,New York,20.00,true,Single
 BIKE002,Regular,Paris,30.00,true,Single
-BIKE003,Regular,London,35.00,true,Single
-BIKE004,Regular,Matale,45.00,true,Multi
-BIKE005,Regular,Kaduwela,10.00,true,Multi

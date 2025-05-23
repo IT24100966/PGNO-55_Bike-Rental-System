@@ -2,12 +2,7 @@ package com.bikerental.pgno55_bikerentalsystem.sort;
 
 import com.bikerental.pgno55_bikerentalsystem.model.Bike;
 
-/**
- * BikeQuickSorter
- *
- * This class implements Quick Sort using the partition method taught in lecture.
- * It sorts bikes based on availability: available bikes (true) come before unavailable (false).
- */
+
 public class BikeQuickSorter {
 
     public static void quickSort(Bike[] bikes, int low, int high) {
@@ -19,8 +14,8 @@ public class BikeQuickSorter {
     }
 
     private static int partition(Bike[] bikes, int low, int high) {
-        Bike pivot = bikes[high]; // A[r]
-        int pivotValue = pivot.isAvailable() ? 0 : 1; // ✅ Available bikes should come first
+        Bike pivot = bikes[high];
+        int pivotValue = pivot.isAvailable() ? 0 : 1;
 
         int i = low - 1;
 
